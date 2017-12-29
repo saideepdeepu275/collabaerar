@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
     @Configuration
     @EnableWebMvc //<mvc:annotation-driven>
-	@ComponentScan(basePackages="com.niit") //<context:component-scan>
+	@ComponentScan(basePackages="com.*") //<context:component-scan>
 	@EnableTransactionManagement
 	public class WebConfig extends WebMvcConfigurerAdapter{
 		
@@ -17,14 +17,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 		registry.addResourceHandler("/resources/**")
 		.addResourceLocations("/WEB-INF/resources/");
 		}
-		
-	/*	@Bean(name = "multipartResolver")
-		public CommonsMultipartResolver getCommonsMultipartResolver() {
-			CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
-			multipartResolver.setMaxUploadSize(20971520); // 20MB
-			multipartResolver.setMaxInMemorySize(1048576);	// 1MB
-			return multipartResolver;
-		}
-	*/
+
 	
 }

@@ -1,9 +1,11 @@
 package com.service;
+
 import java.util.List;
 
 import com.model.UserDetails;
+
 public interface UserService {
-	public boolean saveOrUpdate(UserDetails user);
+	public boolean saveOrUpdate(UserDetails users);
 	public UserDetails updateUser(UserDetails users);
 	public void delete(UserDetails user);
 	public UserDetails getUser(String username);

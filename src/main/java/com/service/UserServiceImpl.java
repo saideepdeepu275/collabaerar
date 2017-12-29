@@ -9,7 +9,7 @@ import com.model.UserDetails;
 
 @Service
 
-public class UserServiceImpl {
+public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserDao userDao;
 
@@ -38,9 +38,9 @@ public class UserServiceImpl {
 		return userDao.UserList();
 	}
 
-	public UserDetails login(UserDetails user) {
+	public UserDetails login(UserDetails users) {
 		
-		return userDao.login(user);
+		return userDao.login(users);
 	}
 
 	public boolean isUsernameValid(String username) {

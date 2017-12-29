@@ -18,7 +18,7 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
-	@RequestMapping(value = "/registration", method = RequestMethod.POST)
+	@RequestMapping(value = "/Register", method = RequestMethod.POST)
 	public ResponseEntity<?> registerUser(@RequestBody UserDetails user) {
 	
 	
@@ -72,5 +72,4 @@ public class UserController {
 		    return new ResponseEntity<UserDetails>(validUser,HttpStatus.OK);    
 		}
 	}
-
 }

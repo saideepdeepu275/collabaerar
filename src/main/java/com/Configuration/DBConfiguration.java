@@ -9,13 +9,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.Dao.UserDao;
 import com.Dao.UserDaoImpl;
 import com.model.UserDetails;
+@Configuration
+@EnableTransactionManagement
+@ComponentScan("com")
 
 public class DBConfiguration {
 	
@@ -26,8 +32,8 @@ Logger logger =LoggerFactory.getLogger(DBConfiguration.class);
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
 		dataSource.setUrl("jdbc:oracle:thin:@localhost:1521:XE");
-		dataSource.setUsername("PROJECT2");
-		dataSource.setPassword("Password1");
+		dataSource.setUsername("FRONTEND1");
+		dataSource.setPassword("Saideep1");
 
 		System.out.println("DataBase is connected.........!");
 		return dataSource;
@@ -38,7 +44,7 @@ Logger logger =LoggerFactory.getLogger(DBConfiguration.class);
 		Properties properties = new Properties();
 		properties.put("hibernate.show_sql", "true");
 		properties.put("hibernate.dialect", "org.hibernate.dialect.Oracle10gDialect");
-		properties.put("hibernate.hbm2ddl.auto", "update");
+		properties.put("hibernate.hbm2ddl.auto", "create");
 		properties.put("hibernate.format_sql","true");
 		System.out.println("Hibernate Properties");
 		return properties;
@@ -69,8 +75,8 @@ Logger logger =LoggerFactory.getLogger(DBConfiguration.class);
 	}
 
 	@Autowired
-	@Bean(name = "usersDao")
-	public UserDao getUsersDAO(SessionFactory sessionFactory)
+	@Bean(name = "UserDao")
+	public UserDao getUserDao(SessionFactory sessionFactory)
 	{
 
 		return new UserDaoImpl(sessionFactory);

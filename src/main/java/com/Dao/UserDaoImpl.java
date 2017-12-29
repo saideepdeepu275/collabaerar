@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import com.model.UserDetails;
 
 
-@Repository
+@Repository("UserDao")
 public class UserDaoImpl implements UserDao {
 	
 Logger Logger=LoggerFactory.getLogger(UserDaoImpl.class);
