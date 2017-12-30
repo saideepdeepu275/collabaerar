@@ -18,7 +18,7 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
-	@RequestMapping(value = "/Register", method = RequestMethod.POST)
+	@RequestMapping(value = "/signUp", method = RequestMethod.POST)
 	public ResponseEntity<?> registerUser(@RequestBody UserDetails user) {
 	
 	
@@ -36,7 +36,10 @@ public class UserController {
 	public ResponseEntity<?> login(@RequestBody UserDetails users,HttpSession session)
 	{ 
 	    System.out.println("Is Session New For" + users.getUserName() + session.isNew());
-	    UserDetails validUser=userService.login(users);
+	    
+	   
+	    
+	    UserDetails validUser=userService.login(users.getUserName(),users.getPassword());
 	    if(validUser==null)
 
 	    {

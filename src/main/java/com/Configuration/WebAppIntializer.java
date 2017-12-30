@@ -2,7 +2,7 @@ package com.Configuration;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-public class WebAppIntializer  extends AbstractAnnotationConfigDispatcherServletInitializer{
+public class WebAppIntializer extends AbstractAnnotationConfigDispatcherServletInitializer{
 
 
 	@Override

@@ -71,7 +71,7 @@ Logger Logger=LoggerFactory.getLogger(UserDaoImpl.class);
 		@Transactional
 		public UserDetails getUser(String username) {
 		Criteria c=sessionFactory.getCurrentSession().createCriteria(UserDetails.class);
-		c.add(Restrictions.eq("username", username));
+		c.add(Restrictions.eq("userName", username));
 		UserDetails user=(UserDetails)c.uniqueResult();
 		return user;
 	}		
@@ -103,16 +103,16 @@ Logger Logger=LoggerFactory.getLogger(UserDaoImpl.class);
 
 	@SuppressWarnings({ "rawtypes", "deprecation" })
 	@Transactional
-	public UserDetails login(UserDetails user) {
+	public UserDetails login(String userName,String password) {
 		Session session=sessionFactory.openSession();
 
-		Query query=session.createQuery("from UsersDetails where userName=? and password=? and enable=?");
+		Query query=session.createQuery("from UserDetails where userName=? and password=? and enable=?");
 	
-		query.setString(0, user.getUserName()); //for assigning the values to parameter username
-		query.setString(1, user.getPassword());
+		query.setString(0,userName); //for assigning the values to parameter username
+		query.setString(1, password);
 		query.setBoolean(2, true);
 		UserDetails validUsers=(UserDetails)query.uniqueResult();
-		session.close();
+	
 		System.out.println("Dao completed");
 		return validUsers;		
 	}

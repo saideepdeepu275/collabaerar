@@ -11,7 +11,7 @@ public interface UserDao {
 	public UserDetails getUser(String username);
 	public UserDetails viewUser(int userid);
 	public List<UserDetails> UserList();
-	public UserDetails login(UserDetails user);
+	public UserDetails login(String userName,String password);
 	public boolean isUsernameValid(String username);
 	public boolean isEmailValid(String email);
 }

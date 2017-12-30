@@ -14,9 +14,9 @@ public class UserServiceImpl implements UserService {
 	private UserDao userDao;
 
 
-	public boolean saveOrUpdate(UserDetails users) {
+	public boolean saveOrUpdate(UserDetails user) {
 
-		return userDao.saveOrUpdate(users);
+		return userDao.saveOrUpdate(user);
 	}
 
 	public void delete(UserDetails user) {
@@ -38,11 +38,13 @@ public class UserServiceImpl implements UserService {
 		return userDao.UserList();
 	}
 
-	public UserDetails login(UserDetails users) {
+	public UserDetails login(String userName,String password) {
 		
-		return userDao.login(users);
+		return userDao.login(userName,password);
 	}
 
+	
+	
 	public boolean isUsernameValid(String username) {
 	
 		return userDao.isUsernameValid(username);
