@@ -13,7 +13,7 @@ public class Notification {
 	
 	private int id;
 	private String blogTitle;
-	private String Username;
+	private String UserName;
 	private String approvalStatus;
 	private String rejectionReason;
 	private boolean viewed;
@@ -32,10 +32,9 @@ public class Notification {
 		this.blogTitle = blogTitle;
 	}
 	public String getUsername() {
-		return Username;
+		return UserName;
 	}
 	public void setUsername(String username) {
-		Username = username;
 	}
 	public String getApprovalStatus() {
 		return approvalStatus;

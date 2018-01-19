@@ -27,7 +27,7 @@ Logger Logger=LoggerFactory.getLogger(UserDaoImpl.class);
 	}
 
 	public boolean saveOrUpdate(UserDetails users) {
-		Logger.info("save Operation started", users.getUser_id());
+		Logger.info("save Operation started", users.getUserName());
 		Session session=sessionFactory.openSession();
 
 		Transaction tx=session.beginTransaction();
@@ -35,7 +35,7 @@ Logger Logger=LoggerFactory.getLogger(UserDaoImpl.class);
 		users.setIsonline(false);
 		session.saveOrUpdate(users);
 		tx.commit();
-		Logger.info("User object has been saved successfually", users.getUser_id());
+		Logger.info("User object has been saved successfually", users.getUserName());
 	
 		return true;			
 	
@@ -69,7 +69,7 @@ Logger Logger=LoggerFactory.getLogger(UserDaoImpl.class);
 	
 		@SuppressWarnings("deprecation")
 		@Transactional
-		public UserDetails getUser(String username) {
+		public UserDetails getUserByUserName(String username) {
 		Criteria c=sessionFactory.getCurrentSession().createCriteria(UserDetails.class);
 		c.add(Restrictions.eq("userName", username));
 		UserDetails user=(UserDetails)c.uniqueResult();
@@ -140,6 +140,11 @@ Logger Logger=LoggerFactory.getLogger(UserDaoImpl.class);
 		}
 		return true;// valid user
 		
+	}
+
+	public UserDetails getUserByUsername(String username) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

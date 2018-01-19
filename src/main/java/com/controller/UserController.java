@@ -1,4 +1,6 @@
 package com.controller;
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +20,20 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
-	@RequestMapping(value = "/signUp", method = RequestMethod.POST)
+	@RequestMapping(value ="/register", method = RequestMethod.POST)
 	public ResponseEntity<?> registerUser(@RequestBody UserDetails user) {
 	
-	
-
+		if(!userService.isUsernameValid(user.getUserName()))
+		{
+			Error error = new Error(user.getUserName()+"..username already exists,, please enter different username");
+			return new ResponseEntity<Error>(error, HttpStatus.NOT_ACCEPTABLE);
+		}
+		
+	 if (!userService.isEmailValid(user.getEmail()))
+	 {
+			Error error = new Error(user.getEmail()+"...Email address already exists,, please enter different email");
+			return new ResponseEntity<Error>(error, HttpStatus.NOT_ACCEPTABLE);
+	}
 		boolean result = userService.saveOrUpdate(user);
 		if (result) {
 			return new ResponseEntity<UserDetails>(user, HttpStatus.OK);
@@ -40,6 +51,7 @@ public class UserController {
 	   
 	    
 	    UserDetails validUser=userService.login(users.getUserName(),users.getPassword());
+	    
 	    if(validUser==null)
 
 	    {
@@ -75,4 +87,18 @@ public class UserController {
 		    return new ResponseEntity<UserDetails>(validUser,HttpStatus.OK);    
 		}
 	}
+
+/******************Listing the User Details****************************/
+
+
+@RequestMapping(value="/users",method=RequestMethod.GET)
+   public ResponseEntity<List<UserDetails>> listAllUsers() {
+    List<UserDetails> users = userService.UserList();
+    if(users.isEmpty()){
+        return new ResponseEntity<List<UserDetails>>(HttpStatus.NO_CONTENT);//You many decide to return HttpStatus.NOT_FOUND
+    }
+    return new ResponseEntity<List<UserDetails>>(users, HttpStatus.OK);
+}
+
+
 }

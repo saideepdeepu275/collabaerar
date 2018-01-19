@@ -5,8 +5,6 @@ import java.util.Properties;
 import javax.sql.DataSource;
 
 import org.hibernate.SessionFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -16,19 +14,21 @@ import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.Dao.UserDao;
-import com.Dao.UserDaoImpl;
+import com.model.BlogPost;
+import com.model.BlogPostLikes;
+import com.model.Notification;
 import com.model.UserDetails;
+import com.model.Job;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan("com")
 
 public class DBConfiguration {
 	
-Logger logger =LoggerFactory.getLogger(DBConfiguration.class);
-	
+
 	@Bean(name = "dataSource")
 	public DataSource getDataSource() {
+		
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
 		dataSource.setUrl("jdbc:oracle:thin:@localhost:1521:XE");
@@ -41,10 +41,11 @@ Logger logger =LoggerFactory.getLogger(DBConfiguration.class);
 	}
 
 	private Properties getHibernateProperties() {
+		
 		Properties properties = new Properties();
 		properties.put("hibernate.show_sql", "true");
 		properties.put("hibernate.dialect", "org.hibernate.dialect.Oracle10gDialect");
-		properties.put("hibernate.hbm2ddl.auto", "create");
+		properties.put("hibernate.hbm2ddl.auto", "update");
 		properties.put("hibernate.format_sql","true");
 		System.out.println("Hibernate Properties");
 		return properties;
@@ -54,12 +55,17 @@ Logger logger =LoggerFactory.getLogger(DBConfiguration.class);
 	@Autowired
 	@Bean(name = "sessionFactory")
 	public SessionFactory getSessionFactory(DataSource dataSource) {
+		
 		LocalSessionFactoryBuilder sessionBuilder = new LocalSessionFactoryBuilder(dataSource);
 		sessionBuilder.addProperties(getHibernateProperties());
-
-		sessionBuilder.addAnnotatedClasses(UserDetails.class);
 	
-		 
+		sessionBuilder.addAnnotatedClasses(UserDetails.class);
+		sessionBuilder.addAnnotatedClasses(BlogPost.class);
+		
+		sessionBuilder.addAnnotatedClass(BlogPostLikes.class);
+		sessionBuilder.addAnnotatedClass(Notification.class);
+		
+		sessionBuilder.addAnnotatedClass(Job.class);
 		System.out.println("Session is created................!");
 
 		return sessionBuilder.buildSessionFactory();
@@ -69,18 +75,10 @@ Logger logger =LoggerFactory.getLogger(DBConfiguration.class);
 	@Autowired
 	@Bean(name = "transactionManager")
 	public HibernateTransactionManager getTransactionManager(SessionFactory sessionFactory) {
+	
 		HibernateTransactionManager transactionManager = new HibernateTransactionManager(sessionFactory);
 		System.out.println("Transaction is created............!");
 		return transactionManager;
 	}
 
-	@Autowired
-	@Bean(name = "UserDao")
-	public UserDao getUserDao(SessionFactory sessionFactory)
-	{
-
-		return new UserDaoImpl(sessionFactory);
 	}
-	
-
-}

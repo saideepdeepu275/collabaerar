@@ -1,5 +1,4 @@
 package com.controller;
-
 import java.util.Date;
 import java.util.List;
 
@@ -8,7 +7,6 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,52 +20,62 @@ import com.Dao.UserDao;
 import com.model.BlogComment;
 import com.model.BlogPost;
 import com.model.BlogPostLikes;
-import com.model.ErrorClazz;
 import com.model.UserDetails;
+import com.service.BlogService;
+import com.service.UserService;
+import com.model.Error;
 
 @RestController
 public class BlogPostController {
+
 	@Autowired
-	private BlogPostDao blogPostDao;
+	private BlogService blogService;
 	@Autowired
-	private UserDao userDao;
+	private UserService userService;
 	@Autowired
 	private BlogPostLikesDao blogPostLikesDao;
+	
+	
 	@RequestMapping(value = "/saveblog", method = RequestMethod.POST)
 	public ResponseEntity<?> saveBlogPost(@RequestBody BlogPost blogPost, HttpSession session) {
-		String username = (String) session.getAttribute("username");
-		if (username == null) {
-			ErrorClazz error = new ErrorClazz(5, "Unauthorized access");
-			return new ResponseEntity<ErrorClazz>(error, HttpStatus.UNAUTHORIZED);// 401
-		}
-		UserDetails user = userDao.getUser(username);// select * from user
-														// where username='adam'
+		UserDetails validUser = (UserDetails) session.getAttribute("validUser");
+		/*if (validUser == null) {
+	
+			Error error = new Error(5,"Unauthorized access");
+			return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);// 401
+		}*/
+	//	UserDetails user=userService.getUserByUserName(validUser.getUserName());//
+				
+				
 		blogPost.setPostedOn(new Date());
-		blogPost.setPostedBy(user);// FK column postedby_username ['adam']
+		blogPost.setPostedBy(validUser);// FK column postedby_username ['adam']
 		try {
-			blogPostDao.saveBlogPost(blogPost);
+			blogService.saveBlogPost(blogPost);
 		} catch (Exception e) {
-			ErrorClazz error = new ErrorClazz(6, "Unable to insert blog details " + e.getMessage());
-			return new ResponseEntity<ErrorClazz>(error, HttpStatus.INTERNAL_SERVER_ERROR);// 500
+			Error error = new Error(6,"Unable to insert blog details " + e.getMessage());
+			return new ResponseEntity<Error>(error, HttpStatus.INTERNAL_SERVER_ERROR);// 500
 		}
 		return new ResponseEntity<BlogPost>(blogPost, HttpStatus.OK);
 	}
 
+	
+	
+	
 	@RequestMapping(value="/getblogs/{approved}",method=RequestMethod.GET)
 	public ResponseEntity<?> getBlogs(@PathVariable int approved,HttpSession session){
-		String username=(String)session.getAttribute("username");
-		if(username==null){
-			ErrorClazz error=new ErrorClazz(5,"Unauthorized access");
-			return new ResponseEntity<ErrorClazz>(error,HttpStatus.UNAUTHORIZED);//401
+		UserDetails validUser = (UserDetails) session.getAttribute("validUser");
+		if(validUser==null){
+			Error error=new Error(5,"Unauthorized access");
+			return new ResponseEntity<Error>(error,HttpStatus.UNAUTHORIZED);//401
 		}
 		if(approved==0){//list of blogs waiting for approval
-			UserDetails user=userDao.getUser(username);
+			UserDetails user=userService.getUserByUserName(validUser.getUserName());
 		if(!user.getRole().equals("ADMIN")){
-			ErrorClazz error=new ErrorClazz(7,"Access Denied");
-			return new ResponseEntity<ErrorClazz>(error,HttpStatus.UNAUTHORIZED);
+			Error error=new Error(7,"Access Denied");
+			return new ResponseEntity<Error>(error,HttpStatus.UNAUTHORIZED);
 		}
 		}
-		List<BlogPost> blogPosts=blogPostDao.getBlogs(approved);
+		List<BlogPost> blogPosts=blogService.getBlogs(approved);
 		return new ResponseEntity<List<BlogPost>>(blogPosts,HttpStatus.OK);
 		
 	}
@@ -78,38 +86,38 @@ public class BlogPostController {
 //			ErrorClazz error=new ErrorClazz(5,"Unauthorized access");
 //			return new ResponseEntity<ErrorClazz>(error,HttpStatus.UNAUTHORIZED);//401
 //		}
-		BlogPost blogPost=blogPostDao.getBlogById(id);
+		BlogPost blogPost=blogService.getBlogById(id);
 		return new ResponseEntity<BlogPost>(blogPost,HttpStatus.OK);
 	}
 	@RequestMapping(value="/updateapprovalstatus",method=RequestMethod.PUT)
 	public ResponseEntity<?> updateApprovalStatus(@RequestBody BlogPost blogPost,
 			          @RequestParam(required=false) String rejectionReason,HttpSession session){
-		String username=(String)session.getAttribute("username");
-		if(username==null){
-			ErrorClazz error=new ErrorClazz(5,"Unauthorized access");
-			return new ResponseEntity<ErrorClazz>(error,HttpStatus.UNAUTHORIZED);//401
+		UserDetails validUser = (UserDetails) session.getAttribute("validUser");
+		if(validUser==null){
+			Error error=new Error(5,"Unauthorized access");
+			return new ResponseEntity<Error>(error,HttpStatus.UNAUTHORIZED);//401
 		}
 		try{
 			//if admin selects Approve, blogPost.approved=1
 			//if admin selects Reject, blogPost.approved=0
 			System.out.println(blogPost);
-		blogPostDao.updateBlogPost(blogPost,rejectionReason);
+			blogService.updateBlogPost(blogPost,rejectionReason);
 		}catch(Exception e){
-			ErrorClazz error=new ErrorClazz(7,"Unable to update blogpost approval status "+e.getMessage());
-			return new ResponseEntity<ErrorClazz>(error,HttpStatus.INTERNAL_SERVER_ERROR);
+			Error error=new Error(7,"Unable to update blogpost approval status "+e.getMessage());
+			return new ResponseEntity<Error>(error,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 
 	@RequestMapping(value="/userLikes/{id}",method=RequestMethod.GET)
 	public ResponseEntity<?> userLikes(@PathVariable int id,HttpSession session){
-		String username=(String)session.getAttribute("username");
-		if(username==null){
-			ErrorClazz error=new ErrorClazz(5,"Unauthorized access");
-			return new ResponseEntity<ErrorClazz>(error,HttpStatus.UNAUTHORIZED);//401
+		UserDetails validUser = (UserDetails) session.getAttribute("validUser");
+		if(validUser==null){
+			Error error=new Error(5,"Unauthorized access");
+			return new ResponseEntity<Error>(error,HttpStatus.UNAUTHORIZED);//401
 		}
-		UserDetails user=userDao.getUser(username);
-		BlogPost blogPost=blogPostDao.getBlogById(id);
+		UserDetails user=userService.getUserByUserName(validUser.getUserName());
+		BlogPost blogPost=blogService.getBlogById(id);
 		//blogPostLikes = null / 1 object
 		// if user has not yet liked the blogPost, blogPostLikes = null
 		//if user has liked the blogPost already, blogPostLikes= 1 object
@@ -118,12 +126,12 @@ public class BlogPostController {
 	}
 	@RequestMapping(value="/updatelikes",method=RequestMethod.PUT)
 	public ResponseEntity<?> updateLikes(@RequestBody BlogPost blogPost,HttpSession session){
-		String username=(String)session.getAttribute("username");
-		if(username==null){
-			ErrorClazz error=new ErrorClazz(5,"Unauthorized access");
-			return new ResponseEntity<ErrorClazz>(error,HttpStatus.UNAUTHORIZED);//401
+		UserDetails validUser = (UserDetails) session.getAttribute("validUser");
+		if(validUser==null){
+			Error error=new Error(5,"Unauthorized access");
+			return new ResponseEntity<Error>(error,HttpStatus.UNAUTHORIZED);//401
 		}
-		UserDetails user=userDao.getUser(username);
+		UserDetails user=userService.getUserByUserName(validUser.getUserName());
 		BlogPost updatedBlogPost=blogPostLikesDao.updateLikes(blogPost, user);
 		return new ResponseEntity<BlogPost>(updatedBlogPost,HttpStatus.OK);
 	}
@@ -131,30 +139,31 @@ public class BlogPostController {
 	//http://localhost:8080/project2middleware/addcomment?commentText='Thanks'&id=484
 	public ResponseEntity<?> addBlogComment(@RequestParam String commentText , @RequestParam int id
 			,HttpSession session){
-		String username=(String)session.getAttribute("username");
-		if(username==null){
-			ErrorClazz error=new ErrorClazz(5,"Unauthorized access");
-			return new ResponseEntity<ErrorClazz>(error,HttpStatus.UNAUTHORIZED);//401
+		UserDetails validUser = (UserDetails) session.getAttribute("validUser");
+		if(validUser==null){
+			Error error=new Error(5,"Unauthorized access");
+			return new ResponseEntity<Error>(error,HttpStatus.UNAUTHORIZED);//401
 		}
-		UserDetails commentedBy=userDao.getUser(username);
+		UserDetails user=userService.getUserByUserName(validUser.getUserName());
 		//Construct blogcomment object
 		BlogComment blogComment=new BlogComment();
 		
 		blogComment.setCommentText(commentText);
-		blogComment.setCommentedBy(commentedBy);
-		BlogPost blogPost=blogPostDao.getBlogById(id);
+		blogComment.setCommentedBy(user);
+		BlogPost blogPost=blogService.getBlogById(id);
 		blogComment.setBlogPost(blogPost);
 		blogComment.setCommentedOn(new Date());
 		
 		
 		try{
-		blogPostDao.addComment(blogComment);
+			blogService.addComment(blogComment);
 		}catch(Exception e){
-			ErrorClazz error=new ErrorClazz(7,"Unable to post comments " + e.getMessage());
-			return new ResponseEntity<ErrorClazz>(error,HttpStatus.INTERNAL_SERVER_ERROR);//500
+			Error error=new Error(7,"Unable to post comments " + e.getMessage());
+			return new ResponseEntity<Error>(error,HttpStatus.INTERNAL_SERVER_ERROR);//500
 		}
-		 blogPost=blogPostDao.getBlogById(id);
+		 blogPost=blogService.getBlogById(id);
 		return new ResponseEntity<BlogPost>(blogPost,HttpStatus.OK);
 		
 	}
+
 }

@@ -8,15 +8,19 @@ import com.Dao.UserDao;
 import com.model.UserDetails;
 
 @Service
-
 public class UserServiceImpl implements UserService {
+	
 	@Autowired
 	private UserDao userDao;
 
+	public boolean saveOrUpdate(UserDetails users) {
+		// TODO Auto-generated method stub
+		return userDao.saveOrUpdate(users);
+	}
 
-	public boolean saveOrUpdate(UserDetails user) {
-
-		return userDao.saveOrUpdate(user);
+	public UserDetails updateUser(UserDetails users) {
+		// TODO Auto-generated method stub
+		return userDao.updateUser(users);
 	}
 
 	public void delete(UserDetails user) {
@@ -24,41 +28,36 @@ public class UserServiceImpl implements UserService {
 		
 	}
 
-	public UserDetails getUser(String username) {
-		return userDao.getUser(username);
+	public UserDetails getUserByUserName(String userName) {
+		// TODO Auto-generated method stub
+		return userDao.getUserByUsername(userName);
 	}
 
 	public UserDetails viewUser(int userid) {
-		
+		// TODO Auto-generated method stub
 		return userDao.viewUser(userid);
 	}
 
 	public List<UserDetails> UserList() {
-	
+		// TODO Auto-generated method stub
 		return userDao.UserList();
 	}
 
-	public UserDetails login(String userName,String password) {
-		
-		return userDao.login(userName,password);
+	public UserDetails login(String username, String password) {
+		// TODO Auto-generated method stub
+		return userDao.login(username, password);
 	}
 
-	
-	
 	public boolean isUsernameValid(String username) {
-	
+		// TODO Auto-generated method stub
 		return userDao.isUsernameValid(username);
 	}
 
 	public boolean isEmailValid(String email) {
-	
+		// TODO Auto-generated method stub
 		return userDao.isEmailValid(email);
 	}
 
-	public UserDetails updateUser(UserDetails users) {
-
-		return userDao.updateUser(users);
-	}
 
 	
 	

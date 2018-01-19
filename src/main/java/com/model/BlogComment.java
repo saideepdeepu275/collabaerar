@@ -1,4 +1,6 @@
+
 package com.model;
+
 
 import java.util.Date;
 
@@ -11,9 +13,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
-@Table(name="blogcomment_s180133")
+@Table(name="C_BlogComment")
 public class BlogComment {
+ 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 private int id;
@@ -55,5 +59,4 @@ public String getCommentText() {
 public void setCommentText(String commentText) {
 	this.commentText = commentText;
 }
-
 }

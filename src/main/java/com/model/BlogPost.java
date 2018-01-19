@@ -1,40 +1,31 @@
-
 package com.model;
-
 import java.util.Date;
-import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
-@Table(name="blogpost_s180133")
-public class BlogPost {
+@Table(name="C_BlogPost")
+ public class BlogPost {
+	
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 private int id;
-@Column(unique=true,nullable=false)
 private String blogTitle;
 @Lob
 private String blogContent;
-private Date postedOn;
 @ManyToOne
 private UserDetails postedBy;
+private Date postedOn;
 private boolean approved;
 private int likes;
-@OneToMany(mappedBy="blogPost",fetch=FetchType.EAGER)
-private List<BlogComment> blogComments;
+/*@OneToMany(mappedBy="blogPost",fetch=FetchType.EAGER)
+private List<BlogComment> blogComments;*/
 public int getId() {
 	return id;
 }
@@ -53,17 +44,17 @@ public String getBlogContent() {
 public void setBlogContent(String blogContent) {
 	this.blogContent = blogContent;
 }
-public Date getPostedOn() {
-	return postedOn;
-}
-public void setPostedOn(Date postedOn) {
-	this.postedOn = postedOn;
-}
 public UserDetails getPostedBy() {
 	return postedBy;
 }
 public void setPostedBy(UserDetails postedBy) {
 	this.postedBy = postedBy;
+}
+public Date getPostedOn() {
+	return postedOn;
+}
+public void setPostedOn(Date postedOn) {
+	this.postedOn = postedOn;
 }
 public boolean isApproved() {
 	return approved;
@@ -77,12 +68,13 @@ public int getLikes() {
 public void setLikes(int likes) {
 	this.likes = likes;
 }
-public List<BlogComment> getBlogComments() {
+/*public List<BlogComment> getBlogComments() {
 	return blogComments;
 }
 public void setBlogComments(List<BlogComment> blogComments) {
 	this.blogComments = blogComments;
-}
+}*/
+
 
 
 }

@@ -1,12 +1,13 @@
-package com.Dao;
+package com.service;
 
 import java.util.List;
 
 import com.model.BlogComment;
 import com.model.BlogPost;
 
-
-public interface BlogPostDao {
+public interface BlogService {
+	
+	
 	void saveBlogPost(BlogPost blogPost);
 	//return list of blogs waiting for approval(0) / list of blogs approved(1)
 	//getBlogs(0) -> list of blogs waiting for approval
@@ -15,4 +16,5 @@ public interface BlogPostDao {
 	BlogPost getBlogById(int id);
 	void updateBlogPost(BlogPost blogPost,String rejectionReason);
 	void addComment(BlogComment blogComment);
+
 }

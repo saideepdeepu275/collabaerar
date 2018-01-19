@@ -5,8 +5,6 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
-import org.springframework.stereotype.Component;
-
 @Entity
 @Table(name="C_USER")
 public class UserDetails  implements Serializable{
@@ -77,14 +75,12 @@ public class UserDetails  implements Serializable{
 	public void setIsonline(boolean isonline) {
 		this.isonline = isonline;
 	}
-	public boolean isEnable() {
+	public boolean getsEnable() {
 		return enable;
 	}
 	public void setEnable(boolean enable) {
 		this.enable = enable;
 	}
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
+
 
 }
